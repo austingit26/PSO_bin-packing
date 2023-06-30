@@ -7,7 +7,7 @@ export default function ResultingBins() {
   const arrangedItems = location.state;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-8">
       <p className="text-xl p-4 w-full text-center text-[40px]">
         You have used{" "}
         <span className="font-bold text-violet-500">
@@ -16,9 +16,12 @@ export default function ResultingBins() {
         bin
         <span>{arrangedItems.length > 1 ? "s" : ""}</span>
       </p>
-      {arrangedItems.map((bin, index) => (
-        <RenderSingleBinPacking key={index} bin={bin} />
-      ))}
+
+      <div className={`grid grid-cols-1 ${arrangedItems.length >= 3 ? "lg:grid-cols-3" : arrangedItems.length === 2 ? "md:grid-cols-2" : ""} gap-4 items-center `}>
+        {arrangedItems.map((bin, index) => (
+          <RenderSingleBinPacking key={index} bin={bin} />
+        ))}
+      </div>
     </div>
   );
 }

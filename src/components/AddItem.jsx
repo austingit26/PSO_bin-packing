@@ -1,9 +1,8 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import FormAddItem from "./FormAddItem";
-import DisplayItems from "./DisplayItems";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem, removeItem } from "../store/item-slice";
-import ResultingBins from "./ResultingBins";
+import DisplayItems from "./DisplayItems";
+import FormAddItem from "./FormAddItem";
 
 export default function AddItem() {
   const { binWidth, binHeight } = useSelector((state) => state.binsize);
@@ -17,12 +16,13 @@ export default function AddItem() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-5/6 mx-10 gap-5">
+    <div className="flex mt-16 lg:mt-0 flex-wrap-reverse md:flex-nowrap justify-center items-center w-full h-5/6 mx-10 gap-5">
       <FormAddItem
         addItem={addItemHandler}
         binWidth={binWidth}
         binHeight={binHeight}
       />
+
       <DisplayItems listItems={listItems} removeItem={removeItemHandler} />
     </div>
   );
