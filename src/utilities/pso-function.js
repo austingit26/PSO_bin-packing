@@ -1,419 +1,391 @@
-// export function solveBinPacking(binSize, items) {
-//   // Initialize particles
-//   const particles = [];
-//   const numParticles = 50; // Number of particles in the swarm
-//   const maxIterations = 50; // Maximum number of iterations
-//   let c1 = 2; // Cognitive coefficient
-//   let c2 = 2; // Social coefficient
-//   let w = 0.7; // Inertia weight
-
-//   // Generate initial bins
-//   let bins = generateInitialBins(items, binSize);
-//   for (let i = 0; i < numParticles; i++) {
-//     const initialPosition = generateInitialBins(items, binSize);
-//     const initialFitness = evaluateFitness(
-//       initialPosition,
-//       items,
-//       binSize,
-//       initialPosition.length
-//     );
-
-//     const particle = {
-//       position: initialPosition,
-//       velocity: generateRandomSolution(items),
-//       bestPosition: initialPosition.slice(),
-//       bestFitness: initialFitness,
-//     };
-
-//     if (initialFitness < particle.bestFitness) {
-//       particle.bestPosition = particle.position.slice();
-//       particle.bestFitness = initialFitness;
-//     }
-
-//     particles.push(particle);
-//   }
-
-//   // Find the global best position and fitness
-//   let globalBestPosition = particles[0].position.slice();
-//   let globalBestFitness = evaluateFitness(
-//     globalBestPosition,
-//     items,
-//     binSize,
-//     bins
-//   );
-
-//   for (let iteration = 0; iteration < maxIterations; iteration++) {
-//     for (let particle of particles) {
-//       // Initialize the best position as a copy of the current position
-//       if (!particle.bestPosition) {
-//         particle.bestPosition = particle.position.map((pos) => ({ ...pos }));
-//         particle.bestFitness = particle.fitness;
-//       }
-
-//       // Update particle velocity and position
-//       for (let i = 0; i < particle.velocity.length; i++) {
-//         const r1 = Math.random();
-//         const r2 = Math.random();
-
-//         // Update velocity
-//         const dx1 =
-//           c1 * r1 * (particle.bestPosition[i].x - particle.position[i].x);
-//         const dx2 =
-//           c2 * r2 * (globalBestPosition[i].x - particle.position[i].x);
-//         const dy1 =
-//           c1 * r1 * (particle.bestPosition[i].y - particle.position[i].y);
-//         const dy2 =
-//           c2 * r2 * (globalBestPosition[i].y - particle.position[i].y);
-
-//         // Update velocity using an extensible object
-//         const newVelocity = {
-//           x: w * particle.velocity[i].x + dx1 + dx2,
-//           y: w * particle.velocity[i].y + dy1 + dy2,
-//         };
-
-//         particle.velocity[i] = newVelocity;
-
-//         // Update position
-//         const newPosition = particle.position.map((pos) => ({ ...pos }));
-//         newPosition[i].x += particle.velocity[i].x;
-//         newPosition[i].y += particle.velocity[i].y;
-//         particle.position = newPosition;
-//       }
-
-//       // Ensure positions are within bounds
-//       enforceBounds(particle.position, binSize, items);
-
-//       // Apply local search mechanisms
-//       for (let particle of particles) {
-//         // Apply 2-opt local search
-//         twoOptLocalSearch(particle.position, items, binSize, bins);
-
-//         // Apply 3-opt local search
-//         threeOptLocalSearch(particle.position, items, binSize, bins);
-//       }
-
-//       // 2-opt Local Search
-//       function twoOptLocalSearch(positions, items, binSize, bins) {
-//         const numItems = items.length;
-
-//         for (let i = 0; i < numItems - 1; i++) {
-//           for (let j = i + 1; j < numItems; j++) {
-//             const swapPositions = twoOptSwap(positions[i], positions[j]);
-//             const newFitness = evaluateFitness(positions, items, binSize, bins);
-
-//             if (newFitness < particle.bestFitness) {
-//               positions[i] = swapPositions[0];
-//               positions[j] = swapPositions[1];
-//               particle.bestPosition = particle.position.slice();
-//               particle.bestFitness = newFitness;
-//             }
-//           }
-//         }
-//       }
-
-//       // Perform a 2-opt swap on two positions
-//       function twoOptSwap(position1, position2) {
-//         const tempX = position1.x;
-//         const tempY = position1.y;
-//         position1.x = position2.x;
-//         position1.y = position2.y;
-//         position2.x = tempX;
-//         position2.y = tempY;
-
-//         return [position1, position2];
-//       }
-
-//       // 3-opt Local Search
-//       function threeOptLocalSearch(positions, items, binSize, bins) {
-//         const numItems = items.length;
-
-//         for (let i = 0; i < numItems - 2; i++) {
-//           for (let j = i + 1; j < numItems - 1; j++) {
-//             for (let k = j + 1; k < numItems; k++) {
-//               const newPositions = threeOptSwap(
-//                 positions[i],
-//                 positions[j],
-//                 positions[k]
-//               );
-//               const newFitness = evaluateFitness(
-//                 positions,
-//                 items,
-//                 binSize,
-//                 bins
-//               );
-
-//               if (newFitness < particle.bestFitness) {
-//                 positions[i] = newPositions[0];
-//                 positions[j] = newPositions[1];
-//                 positions[k] = newPositions[2];
-//                 particle.bestPosition = particle.position.slice();
-//                 particle.bestFitness = newFitness;
-//               }
-//             }
-//           }
-//         }
-//         return [positions[i], positions[j], positions[k]];
-//       }
-
-//       // Perform a 3-opt swap on three positions
-//       function threeOptSwap(position1, position2, position3) {
-//         const tempX = position1.x;
-//         const tempY = position1.y;
-//         position1.x = position2.x;
-//         position1.y = position2.y;
-//         position2.x = position3.x;
-//         position2.y = position3.y;
-//         position3.x = tempX;
-//         position3.y = tempY;
-
-//         return [position1, position2, position3];
-//       }
-
-//       // Update particle's best position and fitness
-//       const fitness = evaluateFitness(newPosition, items, binSize, bins);
-
-//       if (fitness < particle.bestFitness) {
-//         particle.bestPosition = newPosition.map((pos) => ({ ...pos }));
-//         particle.bestFitness = fitness;
-//       }
-
-//       // Update global best position and fitness
-//       if (fitness < globalBestFitness) {
-//         globalBestPosition = newPosition.map((pos) => ({ ...pos }));
-//         globalBestFitness = fitness;
-//       }
-//     }
-
-//     // Update inertia weight
-//     w -= (0.7 - 0.4) / maxIterations;
-//   }
-
-//   // Extract x and y coordinates from positions
-//   const positionsWithCoordinates = globalBestPosition.map((position) => ({
-//     x: position.x,
-//     y: position.y,
-//   }));
-
-//   // Construct bins based on the final best position
-//   const arrangedBins = constructBins(globalBestPosition, binSize, items);
-
-//   // Calculate the density of each bin
-//   const densities = calculateBinDensities(arrangedBins);
-
-//   // Convert bins to the required format
-//   const resultBins = arrangedBins.map((bin, index) => ({
-//     id: index + 1,
-//     items: bin.items.map((item, itemIndex) => ({
-//       id: item.itemId,
-//       x: positionsWithCoordinates[itemIndex].x,
-//       y: positionsWithCoordinates[itemIndex].y,
-//       rotate: positionsWithCoordinates[itemIndex].rotate,
-//       width: item.itemWidth,
-//       height: item.itemHeight,
-//     })),
-//     width: bin.width,
-//     height: bin.height,
-//     density: densities[index],
-//   }));
-
-//   return {
-//     bins: resultBins,
-//     fitness: globalBestFitness,
-//   };
-// }
-
-// /* Helper Functions */
-
-// // Generate initial bins using First Fit algorithm
-// function generateInitialBins(items, binSize) {
-//   const bins = [];
-
-//   for (let item of items) {
-//     let binFound = false;
-
-//     for (let bin of bins) {
-//       const canFit = checkFit(bin, bin.items, item);
-
-//       if (canFit) {
-//         bin.items.push(item);
-//         binFound = true;
-//         break;
-//       }
-//     }
-
-//     if (!binFound) {
-//       const bin = {
-//         width: binSize.binWidth,
-//         height: binSize.binHeight,
-//         items: [item],
-//       };
-//       bins.push(bin);
-//     }
-//   }
-
-//   return bins;
-// }
-
-// function enforceBounds(positions, binSize, items) {
-//   for (let i = 0; i < positions.length; i++) {
-//     const position = positions[i];
-//     const item = items[i];
-
-//     if (position.x < 0) {
-//       position.x = 0;
-//     } else if (position.x + item.width > binSize.width) {
-//       position.x = binSize.width - item.width;
-//     }
-
-//     if (position.y < 0) {
-//       position.y = 0;
-//     } else if (position.y + item.height > binSize.height) {
-//       position.y = binSize.height - item.height;
-//     }
-//   }
-// }
-
-// // Generate a random solution
-// function generateRandomSolution(items) {
-//   const positions = [];
-
-//   for (let item of items) {
-//     positions.push({ ...item, position: { x: 0, y: 0 } });
-//   }
-
-//   return positions;
-// }
-
-// // Evaluate fitness of a solution
-// function evaluateFitness(positions, items, binSize, bins) {
-//   // Reset bins
-//   bins = [];
-
-//   // Initialize fitness variables
-//   let fitness = 0;
-
-//   // Iterate over positions
-//   for (let i = 0; i < positions.length; i++) {
-//     const position = positions[i];
-//     const item = items[i];
-
-//     // Check if item fits in any existing bin along with existing items
-//     let binIndex = -1;
-//     for (let j = 0; j < bins.length; j++) {
-//       const bin = bins[j];
-//       const canFit = checkFit(bin, bin.items, item);
-//       if (canFit) {
-//         binIndex = j;
-//         break;
-//       }
-//     }
-
-//     // If item does not fit in any existing bin, create a new bin
-//     if (binIndex === -1) {
-//       bins.push({
-//         width: binSize.binWidth,
-//         height: binSize.binHeight,
-//         items: [],
-//       });
-//       binIndex = bins.length - 1;
-//     }
-
-//     // Add item to bin
-//     bins[binIndex].items.push(item);
-//   }
-
-//   // Calculate fitness based on the number of bins used and the arrangement of items
-//   const numBins = bins.length;
-//   const maxFitness = binSize.binWidth * binSize.binHeight * numBins;
-//   const itemArea = items.reduce((sum, item) => {
-//     return sum + item.itemWidth * item.itemHeight;
-//   }, 0);
-
-//   fitness = (maxFitness - itemArea) / maxFitness;
-
-//   return fitness;
-// }
-
-// // Check if an item can fit in a bin along with existing items, considering rotation
-// function checkFit(bin, position, item) {
-//   const orientations = [
-//     { width: item.itemWidth, height: item.itemHeight, rotate: false },
-//     { width: item.itemHeight, height: item.itemWidth, rotate: true },
-//   ];
-
-//   for (let orientation of orientations) {
-//     if (
-//       bin.width >= position.x + orientation.width &&
-//       bin.height >= position.y + orientation.height
-//     ) {
-//       // Check if the item can fit along with existing items in the bin
-//       let canFit = true;
-//       for (let existingItem of bin.items) {
-//         if (
-//           position.x + orientation.width > existingItem.x &&
-//           existingItem.x + existingItem.itemWidth > position.x &&
-//           position.y + orientation.height > existingItem.y &&
-//           existingItem.y + existingItem.itemHeight > position.y
-//         ) {
-//           canFit = false;
-//           break;
-//         }
-//       }
-
-//       if (canFit) {
-//         // Item fits in the bin, return true
-//         return { fit: true, rotate: orientation.rotate };
-//       }
-//     }
-//   }
-
-//   return { fit: false }; // Item does not fit in the bin, return false
-// }
-
-// function constructBins(positions, binSize, items) {
-//   // Reset bins
-//   const bins = [];
-
-//   // Iterate over positions
-//   for (let i = 0; i < positions.length; i++) {
-//     const position = positions[i];
-//     const item = items[i];
-
-//     // Check if item fits in any existing bin along with existing items
-//     let binIndex = -1;
-//     for (let j = 0; j < bins.length; j++) {
-//       const bin = bins[j];
-//       const canFit = checkFit(bin, position, item);
-//       if (canFit) {
-//         binIndex = j;
-//         break;
-//       }
-//     }
-
-//     // If item does not fit in any existing bin, create a new bin
-//     if (binIndex === -1) {
-//       bins.push({
-//         width: binSize.binWidth,
-//         height: binSize.binHeight,
-//         items: [],
-//       });
-//       binIndex = bins.length - 1;
-//     }
-
-//     // Add item to bin
-//     bins[binIndex].items.push(item);
-//   }
-
-//   return bins;
-// }
-
-// // Calculate the density of each bin
-// function calculateBinDensities(bins) {
-//   return bins.map((bin) => {
-//     const itemArea = bin.items.reduce((sum, item) => {
-//       return sum + item.itemWidth * item.itemHeight;
-//     }, 0);
-//     const binArea = bin.width * bin.height;
-//     return itemArea / binArea;
-//   });
-// }
+class Bin {
+  constructor(width, height, density) {
+    this.width = width;
+    this.height = height;
+    this.density = density;
+    this.items = [];
+    this.calculateDensity(); // Calculate density upon initialization
+  }
+
+  add_item(item) {
+    this.items.push(item);
+    this.calculateDensity(); // Recalculate density after adding an item
+  }
+
+  calculateDensity() {
+    this.density =
+      this.items.reduce(
+        (accumulator, item) => accumulator + item.width * item.height,
+        0
+      ) /
+      (this.width * this.height);
+  }
+}
+
+class Item {
+  constructor(name, x, y, width, height) {
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.binIndex = -1;
+    this.rotate = false;
+  }
+}
+
+export function solveBinPacking(binSize, items) {
+  // Initialize particles
+  const particles = [];
+  const numParticles = 100; // Number of particles in the swarm
+  const maxIterations = 100; // Maximum number of iterations
+  let c1 = 2; // Cognitive coefficient
+  let c2 = 2; // Social coefficient
+  let w = 0.8; // Inertia weight
+
+  for (let i = 0; i < numParticles; i++) {
+    const initialPosition = setInitialPosition(binSize, items);
+    const initialFitness = evaluateFitness(initialPosition);
+
+    const particle = {
+      position: initialPosition.map((pos) => ({ ...pos })),
+      velocity: generateRandomVelocity(initialPosition),
+      bestPosition: initialPosition.map((pos) => ({ ...pos })),
+      bestFitness: initialFitness,
+    };
+    particles.push(particle);
+  }
+
+  // Find the global best position and fitness
+  let globalBestPosition = particles[0].position.slice();
+  let globalBestFitness = evaluateFitness(globalBestPosition);
+
+  // Main loop
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    for (let particle of particles) {
+      // Update particle velocity and position
+      for (let i = 0; i < particle.velocity.length; i++) {
+        const r1 = Math.random();
+        const r2 = Math.random();
+
+        // Update velocity
+        const dx1 = c1 * r1 * (particle.bestPosition[i] - particle.position[i]);
+        const dx2 = c2 * r2 * (globalBestPosition[i] - particle.position[i]);
+        const dy1 = c1 * r1 * (particle.bestPosition[i] - particle.position[i]);
+        const dy2 = c2 * r2 * (globalBestPosition[i] - particle.position[i]);
+
+        // Update velocity using an extensible object
+        const newVelocity = {
+          x: w * particle.velocity[i].x + dx1 + dx2,
+          y: w * particle.velocity[i].y + dy1 + dy2,
+        };
+
+        particle.velocity[i] = newVelocity;
+
+        // Update best position
+        if (particle.fitness > particle.bestFitness) {
+          particle.bestPosition = particle.position.map((pos) => ({ ...pos }));
+          particle.bestFitness = particle.fitness;
+        }
+      }
+      // Apply local search mechanisms
+      twoOptLocalSearch(particle.position);
+      threeOptLocalSearch(particle.position);
+
+      // Update position
+      const newPosition = particle.position.map((pos) => {
+        const items = pos.items.map((item) => {
+          return {
+            name: item.name,
+            x: item.x,
+            y: item.y,
+            width: item.width,
+            height: item.height,
+            rotate: item.rotate,
+          };
+        });
+
+        const binWidth = pos.binWidth;
+        const binHeight = pos.binHeight;
+        const binDensity = pos.binDensity;
+
+        return { items, binWidth, binHeight, binDensity };
+      });
+
+      particle.position = newPosition;
+
+      // Evaluate fitness of the current position
+      particle.fitness = evaluateFitness(particle.position);
+
+      // Update particle's best position and fitness
+      if (particle.fitness > particle.bestFitness) {
+        particle.bestPosition = particle.position.map((pos) => ({ ...pos }));
+        particle.bestFitness = particle.fitness;
+      }
+
+      // Update global best position and fitness
+      if (particle.fitness > globalBestFitness) {
+        globalBestPosition = particle.position.map((pos) => ({ ...pos }));
+        globalBestFitness = particle.fitness;
+      }
+    }
+
+    // Update the inertia weight
+    w -= 0.45 / maxIterations;
+  }
+
+  // Format the final result to match the initial position format
+  return globalBestPosition;
+}
+
+/*======================= HELPER FUNCTIONS =======================*/
+function twoOptLocalSearch(position) {
+  const improvedPosition = position.map((bin) => {
+    const items = bin.items;
+    const newItems = twoOptSwap(items);
+    return { ...bin, items: newItems };
+  });
+
+  return improvedPosition;
+}
+
+function twoOptSwap(items) {
+  const newItems = [...items];
+
+  for (let i = 0; i < newItems.length - 1; i++) {
+    for (let j = i + 1; j < newItems.length; j++) {
+      const swappedItems = swapItems(newItems[i], newItems[j]);
+      const isValid = validateItems(swappedItems);
+
+      if (isValid) {
+        newItems[i] = swappedItems[0];
+        newItems[j] = swappedItems[1];
+      }
+    }
+  }
+
+  return newItems;
+}
+
+function swapItems(item1, item2) {
+  const newItem1 = { ...item1 };
+  const newItem2 = { ...item2 };
+
+  // Swap positions
+  const tempX = newItem1.x;
+  const tempY = newItem1.y;
+  newItem1.x = newItem2.x;
+  newItem1.y = newItem2.y;
+  newItem2.x = tempX;
+  newItem2.y = tempY;
+
+  return [newItem1, newItem2];
+}
+
+function validateItems(items) {
+  const positions = new Set();
+
+  for (let item of items) {
+    for (let i = item.x; i < item.x + item.width; i++) {
+      for (let j = item.y; j < item.y + item.height; j++) {
+        const position = `${i},${j}`;
+
+        if (positions.has(position)) {
+          return false; // Overlapping positions, not valid
+        }
+
+        positions.add(position);
+      }
+    }
+  }
+
+  return true; // Valid positions, no overlap
+}
+
+function threeOptLocalSearch(position) {
+  const improvedPosition = position.map((bin) => {
+    const items = bin.items;
+    const newItems = threeOptSwap(items);
+    return { ...bin, items: newItems };
+  });
+
+  return improvedPosition;
+}
+
+function threeOptSwap(items) {
+  const newItems = [...items];
+
+  for (let i = 0; i < newItems.length - 2; i++) {
+    for (let j = i + 1; j < newItems.length - 1; j++) {
+      for (let k = j + 1; k < newItems.length; k++) {
+        const swappedItems = swapThreeItems(
+          newItems[i],
+          newItems[j],
+          newItems[k]
+        );
+        const isValid = validateItems(swappedItems);
+
+        if (isValid) {
+          newItems[i] = swappedItems[0];
+          newItems[j] = swappedItems[1];
+          newItems[k] = swappedItems[2];
+        }
+      }
+    }
+  }
+
+  return newItems;
+}
+
+function swapThreeItems(item1, item2, item3) {
+  const newItem1 = { ...item1 };
+  const newItem2 = { ...item2 };
+  const newItem3 = { ...item3 };
+
+  // Swap positions
+  const tempX1 = newItem1.x;
+  const tempY1 = newItem1.y;
+  newItem1.x = newItem2.x;
+  newItem1.y = newItem2.y;
+  newItem2.x = newItem3.x;
+  newItem2.y = newItem3.y;
+  newItem3.x = tempX1;
+  newItem3.y = tempY1;
+
+  return [newItem1, newItem2, newItem3];
+}
+
+function generateRandomVelocity(items) {
+  const velocity = [];
+  for (let i = 0; i < items.length; i++) {
+    const dx = Math.random() > 0.5 ? 1 : -1;
+    const dy = Math.random() > 0.5 ? 1 : -1;
+    velocity.push({ x: dx, y: dy, binIndex: -1 });
+  }
+  return velocity;
+}
+
+function evaluateFitness(solution) {
+  let densityWeight = 0;
+
+  for (let i = 0; i < solution.length; i++) {
+    densityWeight += solution[i].binDensity;
+  }
+  const fitness = densityWeight / solution.length;
+  return fitness;
+}
+
+function can_place_item(bin, item) {
+  if (item.x + item.width > bin.width || item.y + item.height > bin.height) {
+    return false;
+  }
+
+  for (let existing_item of bin.items) {
+    if (
+      item.x < existing_item.x + existing_item.width &&
+      item.x + item.width > existing_item.x &&
+      item.y < existing_item.y + existing_item.height &&
+      item.y + item.height > existing_item.y
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function place_items(items, bin_width, bin_height) {
+  let bin = new Bin(bin_width, bin_height);
+  let totalWidth = 0;
+  let maxHeight = 0;
+
+  items.sort((a, b) => b.width - a.width);
+
+  for (let item of items) {
+    if (totalWidth + item.width <= bin_width && item.height <= bin_height) {
+      item.x = totalWidth;
+      item.y = 0;
+      item.rotate = false;
+
+      if (can_place_item(bin, item)) {
+        bin.add_item(item);
+
+        totalWidth += item.width;
+        if (item.height > maxHeight) {
+          maxHeight = item.height;
+        }
+      }
+    } else {
+      item.rotate = true;
+
+      if (totalWidth + item.height <= bin_width && item.width <= bin_height) {
+        item.x = totalWidth;
+        item.y = 0;
+
+        if (can_place_item(bin, item)) {
+          bin.add_item(item);
+
+          totalWidth += item.height;
+          if (item.width > maxHeight) {
+            maxHeight = item.width;
+          }
+        }
+      }
+    }
+  }
+
+  let remaining_items = items.filter((item) => !bin.items.includes(item));
+
+  return [bin, remaining_items, totalWidth, maxHeight];
+}
+
+function initialize_particle(items, bin_width, bin_height) {
+  let bins = [];
+  let remaining_items = items;
+
+  while (remaining_items.length > 0) {
+    let [bin, itemsLeft] = place_items(remaining_items, bin_width, bin_height);
+    bins.push(bin);
+    remaining_items = itemsLeft;
+  }
+
+  return bins;
+}
+
+function setInitialPosition(binSize, items) {
+  let convertedItems = items.map((item) => {
+    return new Item(item.itemName, 0, 0, item.itemWidth, item.itemHeight);
+  });
+
+  let bins = initialize_particle(
+    convertedItems,
+    binSize.binWidth,
+    binSize.binHeight
+  );
+
+  let initial_solution = [];
+
+  for (let bin of bins) {
+    let itemData = bin.items.map((item) => {
+      return {
+        name: item.name,
+        width: item.width,
+        height: item.height,
+        x: item.x,
+        y: item.y,
+        rotate: item.rotate,
+      };
+    });
+
+    let formattedBin = {
+      binWidth: bin.width,
+      binHeight: bin.height,
+      items: itemData,
+      binDensity: bin.density,
+    };
+
+    initial_solution.push(formattedBin);
+  }
+  console.log("initial_solution", JSON.stringify(initial_solution));
+  return initial_solution;
+}

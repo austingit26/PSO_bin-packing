@@ -1,5 +1,5 @@
 import { BsArrowRightShort } from "react-icons/bs";
-// import { solveBinPacking } from "../utilities/pso-function";
+import { solveBinPacking } from "../utilities/pso-function";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -13,139 +13,8 @@ export default function DisplayItems({ listItems, removeItem }) {
   };
 
   const handlePSOclick = () => {
-    // const arrangedItems = solveBinPacking(binSize, listItems);
-    // console.log(arrangedItems);
-    const arrangedItems = [
-      {
-        binWidth: 50,
-        binHeight: 50,
-        items: [
-          {
-            name: "rice",
-            width: 25,
-            height: 25,
-            x: 0,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "sugar",
-            width: 20,
-            height: 2,
-            x: 25,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "drinks",
-            width: 25,
-            height: 5,
-            x: 45,
-            y: 0,
-            rotate: true,
-          },
-        ],
-        binDensity: 0.316, //(25*25)+(20*2)+(25*5) / (50*50)
-      },
-      {
-        binWidth: 50,
-        binHeight: 50,
-        items: [
-          {
-            name: "battery",
-            width: 15,
-            height: 25,
-            x: 0,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "bread",
-            width: 20,
-            height: 10,
-            x: 15,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "soap",
-            width: 25,
-            height: 15,
-            x: 35,
-            y: 0,
-            rotate: true,
-          },
-          {
-            name: "milk",
-            width: 15,
-            height: 20,
-            x: 15,
-            y: 10,
-            rotate: true,
-          },
-        ],
-        binDensity: 0.5, //(15*25)+(10*20)+(25*15)+(15*20) / (50*50)
-      },
-      {
-        binWidth: 50,
-        binHeight: 50,
-        items: [
-          {
-            name: "battery",
-            width: 26,
-            height: 13,
-            x: 1,
-            y: 37,
-            rotate: false,
-          },
-          {
-            name: "battery",
-            width: 8,
-            height: 22,
-            x: 27,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "battery",
-            width: 23,
-            height: 28,
-            x: 27,
-            y: 22,
-            rotate: false,
-          },
-          {
-            name: "battery",
-            width: 15,
-            height: 14,
-            x: 35,
-            y: 8,
-            rotate: false,
-          },
-          {
-            name: "battery",
-            width: 15,
-            height: 8,
-            x: 35,
-            y: 0,
-            rotate: false,
-          },
-          {
-            name: "battery",
-            width: 27,
-            height: 37,
-            x: 0,
-            y: 0,
-            rotate: false,
-          },
-        ],
-        binDensity: 0.5, //(15*25)+(10*20)+(25*15)+(15*20) / (50*50)
-      },
-    ];
-
+    const arrangedItems = solveBinPacking(binSize, listItems);
     navigate("/resulting-bins", { state: arrangedItems });
-    /*     console.log("total bins:", result.length);
-    console.log(JSON.stringify(result, null, 2)); */
   };
 
   /*  When we empty the listItems, it leaves the localstorage with [[]].
