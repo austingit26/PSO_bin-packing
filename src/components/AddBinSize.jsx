@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { indicateBinSize } from "../store/bin-size-slice";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { indicateBinSize } from "../store/bin-size-slice";
 
 export default function AddBinSize() {
   const navigate = useNavigate();
@@ -12,19 +12,19 @@ export default function AddBinSize() {
   const schema = yup.object().shape({
     binWidth: yup
       .number()
-      .min(40, "Bin width should not be less than 40")
+      .min(20, "Bin width should not be less than 20")
       .max(100, "Bin width should not be greater than 100")
       .typeError("Please enter a valid number for bin width")
       .required(),
     binHeight: yup
       .number()
-      .min(40, "Bin height should not be less than 40")
+      .min(20, "Bin height should not be less than 20")
       .max(100, "Bin height should not be greater than 100")
       .typeError("Please enter a valid number for bin height")
       .required(),
   });
 
-  const storedBinSize = localStorage.getItem("binSize");
+  const storedBinSize = localStorage.getItem("binSize") || 40;
   const { width: storedWidth, height: storedHeight } =
     JSON.parse(storedBinSize);
 
@@ -49,14 +49,14 @@ export default function AddBinSize() {
   };
 
   return (
-    <div className="flex-grow flex justify-center items-center">
-      <div className="xl:w-2/5 lg:w-3/5 md:w-3/5 sm:w-4/5 w-5/5 h-5/6 border dark:border-neutral-900 rounded-2xl shadow-neutral-900 shadow-md p-5 flex flex-col justify-center">
+    <div className="flex w-full justify-center items-center px-2">
+      <div className="bg-white w-full sm:w-[450px] dark:bg-neutral-900 h-5/6 rounded-xl shadow-md p-8 flex flex-col justify-center">
         <form
           className="flex flex-col justify-center gap-6 w-full items-center h-4/5"
           onSubmit={handleSubmit(binSizeFormSubmit)}
           noValidate
         >
-          <p className="text-center font-bold tracking-wide max-[350px]:text-[14px]">
+          <p className="text-center font-bold tracking-widest text-xl uppercase">
             Indicate Bin size
           </p>
           <div className="flex flex-col items-center justify-center w-max gap-y-5 max-[350px]:w-full">
@@ -70,10 +70,10 @@ export default function AddBinSize() {
               <input
                 type="number"
                 {...register("binWidth")}
-                className="bg-transparent p-3 border-neutral-500 border outline-none w-max max-[350px]:w-full"
+                className="bg-transparent p-3 border-neutral-500 border rounded-lg outline-none w-max max-[350px]:w-full"
               />
             </div>
-            <p className="text-red-500 text-xs tracking-wide font-thin text-end -mt-4 h-0 w-full max-[350px]:text-[11px]">
+            <p className="text-red-500 text-xs tracking-wide text-end -mt-4 h-0 w-full max-[350px]:text-[11px]">
               {errors.binWidth?.message}
             </p>
           </div>
@@ -89,22 +89,22 @@ export default function AddBinSize() {
               <input
                 type="number"
                 {...register("binHeight")}
-                className="bg-transparent p-3 border-neutral-500 border outline-none w-max max-[350px]:w-full"
+                className="bg-transparent p-3 border-neutral-500 rounded-lg border outline-none w-max max-[350px]:w-full"
               />
             </div>
-            <p className="text-red-500 text-xs tracking-wide font-thin text-end w-full -mt-4 h-0 max-[350px]:text-[11px]">
+            <p className="text-red-500 text-xs tracking-wide text-end w-full -mt-4 h-0 max-[350px]:text-[11px]">
               {errors.binHeight?.message}
             </p>
           </div>
           <button
             type="submit"
-            className="bg-violet-900 w-32 h-10 flex justify-center items-center font-bold tracking-widest text-sm text-white max-[350px]:p-5"
+            className="bg-violet-900 hover:bg-violet-950 transition rounded-lg mt-4 w-32 h-10 flex justify-center items-center font-bold tracking-widest text-sm text-white max-[350px]:p-5"
           >
             Confirm
           </button>
         </form>
-        <p className="text-center text-xs sm:text-xs mt-5 tracking-wide text-neutral-600 dark:text-neutral-400">
-          Bin size should be within 40cm - 100cm for visualization purposes
+        <p className="text-center text-xs sm:text-xs mt-5 tracking-wide text-neutral-500 dark:text-neutral-400">
+          Bin size should be within 20cm - 100cm for visualization purposes
         </p>
       </div>
     </div>

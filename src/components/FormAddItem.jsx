@@ -43,7 +43,7 @@ export default function FormAddItem({ addItem, binWidth, binHeight }) {
   });
 
   return (
-    <div className="py-10">
+    <div className="pt-2 pb-16 md:pt-0 md:pb-0">
       <form
         className="flex flex-col gap-5 justify-around items-center"
         onSubmit={handleSubmit(addItemSubmit)}
@@ -57,10 +57,10 @@ export default function FormAddItem({ addItem, binWidth, binHeight }) {
             <input
               type="text"
               {...register("itemName")}
-              className="bg-transparent p-2 border-neutral-500 border outline-none w-max"
+              className="bg-transparent rounded-lg p-2 border-neutral-500 border outline-none w-max"
             />
           </div>
-          <p className="text-red-500 text-xs tracking-wide font-thin self-end -mt-4 h-0">
+          <p className="text-red-500 text-xs tracking-wide self-end -mt-4 h-0">
             {errors.itemName?.message}
           </p>
         </div>
@@ -73,10 +73,10 @@ export default function FormAddItem({ addItem, binWidth, binHeight }) {
             <input
               type="text"
               {...register("itemWidth")}
-              className="bg-transparent p-2 border-neutral-500 border outline-none w-max"
+              className="bg-transparent p-2 rounded-lg border-neutral-500 border outline-none w-max"
             />
           </div>
-          <p className="text-red-500 text-xs tracking-wide font-thin self-end -mt-4 h-0">
+          <p className="text-red-500 text-xs tracking-wide self-end -mt-4 h-0">
             {errors.itemWidth?.message}
           </p>
         </div>
@@ -89,17 +89,17 @@ export default function FormAddItem({ addItem, binWidth, binHeight }) {
             <input
               type="text"
               {...register("itemHeight")}
-              className="bg-transparent p-2 border-neutral-500 border outline-none w-max"
+              className="bg-transparent p-2 rounded-lg border-neutral-500 border outline-none w-max"
             />
           </div>
-          <p className="text-red-500 text-xs tracking-wide font-thin self-end -mt-4 h-0">
+          <p className="text-red-500 text-xs tracking-wide self-end -mt-4 h-0">
             {errors.itemHeight?.message}
           </p>
         </div>
         <div className="flex justify-end w-full">
           <button
             type="submit"
-            className="px-10 py-2 bg-neutral-900 text-white font-bold tracking-wide"
+            className="px-10 mt-2 py-2 bg-neutral-900 w-full md:w-auto hover:bg-neutral-950 transition rounded-lg text-white font-bold tracking-wide"
           >
             Add Item
           </button>

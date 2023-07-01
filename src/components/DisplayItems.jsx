@@ -1,7 +1,7 @@
 import { BsArrowRightShort } from "react-icons/bs";
-import { solveBinPacking } from "../utilities/pso-function";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { solveBinPacking } from "../utilities/pso-function";
 
 export default function DisplayItems({ listItems, removeItem }) {
   const navigate = useNavigate();
@@ -29,12 +29,11 @@ export default function DisplayItems({ listItems, removeItem }) {
   listItems.length === 0 && localStorage.removeItem("ListItems");
 
   return (
-    <div className="bg-neutral-900 w-[500px] h-[400px] rounded-t-2xl shadow-neutral-950 shadow-sm dark:shadow-md text-slate-100">
+    <div className="bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100">
       <nav
-        className="px-4 py-8 rounded-t-xl h-2 flex justify-between items-center"
-        style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.25)" }}
+        className="px-4 py-8 shadow-md rounded-t-xl h-2 flex justify-between items-center"
       >
-        <p>
+        <p className="text-white">
           <span className="font-bold">{listItems.length}</span> ITEMS
         </p>
         <button
@@ -48,17 +47,19 @@ export default function DisplayItems({ listItems, removeItem }) {
       </nav>
       {/* ITEM CONTAINER */}
       <div
-        className="p-2 mt-2 flex flex-wrap gap-2 overflow-y-scroll"
+        className="scrollbar px-4 py-5 mt-2 flex flex-wrap gap-2 h-full overflow-y-scroll"
         style={{ maxHeight: "calc(100% - 5rem)" }}
       >
         {listItems.map((item, index) => (
           <div
             key={index}
             style={{ width: item.itemWidth * 3, height: item.itemHeight * 3 }}
-            className="bg-neutral-500 flex flex-col items-center justify-center text-xs relative"
+            className="bg-violet-900 p-0.5 rounded-sm flex flex-col items-center justify-center text-xs relative"
             onDoubleClick={() => handleDoubleClick(index)}
           >
-            <p>{`${item.itemWidth} x ${item.itemHeight}`}</p>
+            <p className="text-white">
+              {`${item.itemWidth} x ${item.itemHeight}`}
+            </p>
             <p
               className={
                 item.itemHeight <= 10 || item.itemWidth <= 10 ? "truncate" : ""
