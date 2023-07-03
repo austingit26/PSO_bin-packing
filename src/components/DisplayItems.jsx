@@ -1,19 +1,25 @@
 import { BsArrowRightShort } from "react-icons/bs";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { solveBinPacking } from "../utilities/pso-function";
+import { setIsLoading } from "../store/loader-slice";
+import { Loader } from "../components/Loader";
 
 export default function DisplayItems({ listItems, removeItem }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { binWidth, binHeight } = useSelector((state) => state.binsize);
   const binSize = { binWidth, binHeight };
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const handleDoubleClick = (index) => {
     removeItem(index);
   };
 
   const handlePSOclick = () => {
+    dispatch(setIsLoading(true));
     const arrangedItems = solveBinPacking(binSize, listItems);
+    dispatch(setIsLoading(false));
     navigate("/resulting-bins", { state: arrangedItems });
   };
 
@@ -30,9 +36,7 @@ export default function DisplayItems({ listItems, removeItem }) {
 
   return (
     <div className="bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100">
-      <nav
-        className="px-4 py-8 shadow-md rounded-t-xl h-2 flex justify-between items-center"
-      >
+      <nav className="px-4 py-8 shadow-md rounded-t-xl h-2 flex justify-between items-center">
         <p className="text-white">
           <span className="font-bold">{listItems.length}</span> ITEMS
         </p>
@@ -46,6 +50,7 @@ export default function DisplayItems({ listItems, removeItem }) {
         </button>
       </nav>
       {/* ITEM CONTAINER */}
+      {isLoading && <Loader />}
       <div
         className="scrollbar px-4 py-5 mt-2 flex flex-wrap gap-2 h-full overflow-y-scroll"
         style={{ maxHeight: "calc(100% - 5rem)" }}

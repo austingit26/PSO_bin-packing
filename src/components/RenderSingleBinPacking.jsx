@@ -14,20 +14,20 @@ export default function RenderSingleBinPacking({ bin }) {
           }}
         ></div>
         <div
-          className="bg-neutral-300 dark:bg-neutral-900 rounded-t-lg"
+          className="bg-neutral-900 rounded-t-lg"
           style={{ width: bin.binWidth * c, height: (bin.binHeight * c) / 3 }}
         ></div>
       </div>
       {/* BIN CONTAINER */}
       <div
-        className="bg-neutral-300 dark:bg-neutral-900 flex-col-reverse rotate-180"
+        className="bg-neutral-900 flex-col-reverse rotate-180"
         style={{ width: bin.binWidth * c, height: bin.binHeight * c }}
       >
         {/* ITEMS ON BIN */}
         <div className="flex flex-row-reverse">
           {bin.items.map((item, index) => (
             <div
-              className={`flex bg-violet-900 justify-center items-center border-y-2 border-x rounded-sm border-neutral-900 dark:border-neutral-400 absolute`}
+              className={`flex bg-violet-900 justify-center items-center border-y-2 border-x rounded-sm border-neutral-900 absolute`}
               key={index}
               style={{
                 width: item.rotate ? item.height * c : item.width * c,
@@ -45,7 +45,7 @@ export default function RenderSingleBinPacking({ bin }) {
                   {item.width} x {item.height}
                 </p>
                 <p className={item.rotate ? "rotate-90" : ""}>
-                  {(item.height <= 5 || item.width <= 5) ? "":item.name}
+                  {item.height <= 5 || item.width <= 5 ? "" : item.name}
                 </p>
               </span>
             </div>
