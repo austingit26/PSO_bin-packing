@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Nav from "./components/Nav";
 import ResultingBins from "./components/ResultingBins";
 
+
 export default function App() {
   return (
     <div className="flex flex-col bg-neutral-100 dark:bg-neutral-800 dark:text-slate-100 min-h-screen min-w-screen">
