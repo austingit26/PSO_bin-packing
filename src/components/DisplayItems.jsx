@@ -1,9 +1,9 @@
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsArrowRightShort } from "react-icons/bs";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { solveBinPacking } from "../utilities/pso-function";
 import { setIsLoading } from "../store/loader-slice";
-import { Loader } from "../components/Loader";
+import { solveBinPacking } from "../utilities/pso-function";
 
 export default function DisplayItems({ listItems, removeItem }) {
   const dispatch = useDispatch();
@@ -18,9 +18,12 @@ export default function DisplayItems({ listItems, removeItem }) {
 
   const handlePSOclick = () => {
     dispatch(setIsLoading(true));
-    const arrangedItems = solveBinPacking(binSize, listItems);
-    dispatch(setIsLoading(false));
-    navigate("/resulting-bins", { state: arrangedItems });
+    setTimeout(() => {
+      const arrangedItems = solveBinPacking(binSize, listItems);
+      dispatch(setIsLoading(false));
+      navigate("/resulting-bins", { state: arrangedItems });
+    }, 500)
+    
   };
 
   /*  When we empty the listItems, it leaves the localstorage with [[]].
@@ -35,22 +38,31 @@ export default function DisplayItems({ listItems, removeItem }) {
   listItems.length === 0 && localStorage.removeItem("ListItems");
 
   return (
-    <div className="bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100">
+    <div className={`bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100 ${isLoading? "animate-pulse" : ""}`}>
       <nav className="px-4 py-8 shadow-md rounded-t-xl h-2 flex justify-between items-center">
-        <p className="text-white">
+        <p className="text-white flex gap-2">
+          <AiOutlineLoading3Quarters className={`self-center mr-2 animate-spin ${isLoading ? "block" : "hidden"}`} />
           <span className="font-bold">{listItems.length}</span> ITEMS
         </p>
         <button
           className="bg-violet-900 text-slate-100 w-28 h-10 rounded-lg flex gap-1 justify-center items-center disabled:opacity-50"
-          disabled={listItems.length === 0}
+          disabled={listItems.length === 0 || isLoading}
           onClick={handlePSOclick}
         >
-          Next
-          <BsArrowRightShort size={25} />
+          {
+            isLoading ? (
+              <>Loading...</>
+            ): (
+              <>
+                Next
+                <BsArrowRightShort size={25} />
+              </>
+            )
+          }
+          
         </button>
       </nav>
       {/* ITEM CONTAINER */}
-      {isLoading && <Loader />}
       <div
         className="scrollbar px-4 py-5 mt-2 flex flex-wrap gap-2 h-full overflow-y-scroll"
         style={{ maxHeight: "calc(100% - 5rem)" }}

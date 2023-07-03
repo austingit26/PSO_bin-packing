@@ -1,13 +1,13 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import { AiOutlineReload } from "react-icons/ai";
+import { useLocation, useNavigate } from "react-router-dom";
 import RenderSingleBinPacking from "./RenderSingleBinPacking";
-import { useNavigate } from "react-router-dom";
 
 export default function ResultingBins() {
   const location = useLocation();
   const arrangedItems = location.state;
   const navigate = useNavigate();
+  const binSize = localStorage.getItem("binSize");
 
   const handleRetry = () => {
     //reset all items and bin sizes on local storage
@@ -29,9 +29,9 @@ export default function ResultingBins() {
 
       <div
         className={`grid grid-cols-1 ${
-          arrangedItems.length >= 3
+          binSize.binWidth < 40 && arrangedItems.length >= 3
             ? "lg:grid-cols-3"
-            : arrangedItems.length === 2
+            : binSize.binWidth < 40 && arrangedItems.length === 2
             ? "md:grid-cols-2"
             : ""
         } gap-4 items-center `}
