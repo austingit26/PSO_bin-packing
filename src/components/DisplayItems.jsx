@@ -1,4 +1,4 @@
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BsArrowRightShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,8 +22,7 @@ export default function DisplayItems({ listItems, removeItem }) {
       const arrangedItems = solveBinPacking(binSize, listItems);
       dispatch(setIsLoading(false));
       navigate("/resulting-bins", { state: arrangedItems });
-    }, 500)
-    
+    }, 500);
   };
 
   /*  When we empty the listItems, it leaves the localstorage with [[]].
@@ -38,10 +37,18 @@ export default function DisplayItems({ listItems, removeItem }) {
   listItems.length === 0 && localStorage.removeItem("ListItems");
 
   return (
-    <div className={`bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100 ${isLoading? "animate-pulse" : ""}`}>
+    <div
+      className={`bg-neutral-900 w-[500px] mx-4 md:mx-0 h-[400px] rounded-lg shadow-md dark:shadow-md text-slate-100 ${
+        isLoading ? "animate-pulse" : ""
+      }`}
+    >
       <nav className="px-4 py-8 shadow-md rounded-t-xl h-2 flex justify-between items-center">
         <p className="text-white flex gap-2">
-          <AiOutlineLoading3Quarters className={`self-center mr-2 animate-spin ${isLoading ? "block" : "hidden"}`} />
+          <AiOutlineLoading3Quarters
+            className={`self-center mr-2 animate-spin ${
+              isLoading ? "block" : "hidden"
+            }`}
+          />
           <span className="font-bold">{listItems.length}</span> ITEMS
         </p>
         <button
@@ -49,17 +56,14 @@ export default function DisplayItems({ listItems, removeItem }) {
           disabled={listItems.length === 0 || isLoading}
           onClick={handlePSOclick}
         >
-          {
-            isLoading ? (
-              <>Loading...</>
-            ): (
-              <>
-                Next
-                <BsArrowRightShort size={25} />
-              </>
-            )
-          }
-          
+          {isLoading ? (
+            <>Loading...</>
+          ) : (
+            <>
+              Next
+              <BsArrowRightShort size={25} />
+            </>
+          )}
         </button>
       </nav>
       {/* ITEM CONTAINER */}

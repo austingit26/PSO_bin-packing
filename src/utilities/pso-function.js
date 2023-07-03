@@ -256,6 +256,11 @@ function evaluateFitness(solution) {
   return fitness;
 }
 
+
+
+
+
+
 function can_place_item(bin, item) {
   if (item.x + item.width > bin.width || item.y + item.height > bin.height) {
     return false;

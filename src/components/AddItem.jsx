@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItem, removeItem } from "../store/item-slice";
 import DisplayItems from "./DisplayItems";
 import FormAddItem from "./FormAddItem";
+import Loader from "./Loader";
 
 export default function AddItem() {
   const { binWidth, binHeight } = useSelector((state) => state.binsize);
@@ -15,15 +16,19 @@ export default function AddItem() {
     dispatch(removeItem(index));
   };
 
-  return (
-    <div className="flex mt-16 lg:mt-0 flex-wrap-reverse md:flex-nowrap justify-center items-center w-full h-5/6 mx-10 gap-5">
-      <FormAddItem
-        addItem={addItemHandler}
-        binWidth={binWidth}
-        binHeight={binHeight}
-      />
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
-      <DisplayItems listItems={listItems} removeItem={removeItemHandler} />
-    </div>
+  return (
+    <>
+      <div className="flex mt-16 lg:mt-0 flex-wrap-reverse md:flex-nowrap justify-center items-center w-full h-5/6 mx-10 gap-5">
+        {isLoading && <Loader />}
+        <FormAddItem
+          addItem={addItemHandler}
+          binWidth={binWidth}
+          binHeight={binHeight}
+        />
+        <DisplayItems listItems={listItems} removeItem={removeItemHandler} />
+      </div>
+    </>
   );
 }

@@ -1,11 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import './App.css';
+import "./App.css";
 import AddBinSize from "./components/AddBinSize";
 import AddItem from "./components/AddItem";
 import Footer from "./components/Footer";
 import Nav from "./components/Nav";
 import ResultingBins from "./components/ResultingBins";
-
 
 export default function App() {
   return (
