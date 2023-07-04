@@ -1,10 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import AddBinSize from "./components/AddBinSize";
-import AddItem from "./components/AddItem";
+import AddBinSize from "./pages/AddBinSize";
+import AddItem from "./pages/AddItem";
 import Footer from "./components/Footer";
 import Nav from "./components/Nav";
-import ResultingBins from "./components/ResultingBins";
+import ResultingBins from "./pages/ResultingBins";
+import AboutOptiBin from "./pages/AboutOptiBin";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<AddBinSize />} />
           <Route path="/add-item" element={<AddItem />} />
           <Route path="/resulting-bins" element={<ResultingBins />} />
+          <Route path="/about-OB" element={<AboutOptiBin />} />
         </Routes>
       </main>
       <Footer />

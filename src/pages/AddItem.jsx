@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem, removeItem } from "../store/item-slice";
-import DisplayItems from "./DisplayItems";
-import FormAddItem from "./FormAddItem";
-import Loader from "./Loader";
+import DisplayItems from "../components/DisplayItems";
+import FormAddItem from "../components/FormAddItem";
+import Loader from "../components/Loader";
 
 export default function AddItem() {
   const { binWidth, binHeight } = useSelector((state) => state.binsize);

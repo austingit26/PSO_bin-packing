@@ -1,7 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function RenderSingleBinPacking({ bin }) {
-  const c = 10; // enlarge all items 10px times
+  const [fontSize, setFontSize] = useState(() => {
+    if (window.innerWidth >= 1024) {
+      return 10;
+    } else if (window.innerWidth >= 768) {
+      return 8;
+    } else {
+      return 6;
+    }
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        // Large screen size and above
+        setFontSize(10);
+      } else if (window.innerWidth >= 768) {
+        // Medium screen size
+        setFontSize(8);
+      } else {
+        // Small screen size
+        setFontSize(6);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center h-full p-5 text-white">
@@ -9,19 +37,26 @@ export default function RenderSingleBinPacking({ bin }) {
         <div
           className="bg-neutral-100 dark:bg-neutral-800 absolute rounded-b-xl z-10"
           style={{
-            width: (bin.binWidth * c) / 2,
-            height: (bin.binHeight * c) / 3,
+            width: (bin.binWidth * fontSize) / 2,
+            height: (bin.binHeight * fontSize) / 3,
           }}
         ></div>
         <div
           className="bg-neutral-900 rounded-t-lg"
-          style={{ width: bin.binWidth * c, height: (bin.binHeight * c) / 3 }}
+          style={{
+            width: bin.binWidth * fontSize,
+            height: (bin.binHeight * fontSize) / 3,
+          }}
         ></div>
       </div>
+
       {/* BIN CONTAINER */}
       <div
         className="bg-neutral-900 flex-col-reverse rotate-180"
-        style={{ width: bin.binWidth * c, height: bin.binHeight * c }}
+        style={{
+          width: bin.binWidth * fontSize,
+          height: bin.binHeight * fontSize,
+        }}
       >
         {/* ITEMS ON BIN */}
         <div className="flex flex-row-reverse">
@@ -30,16 +65,20 @@ export default function RenderSingleBinPacking({ bin }) {
               className={`flex bg-violet-900 justify-center items-center border-y-2 border-x rounded-sm border-neutral-900 absolute`}
               key={index}
               style={{
-                width: item.rotate ? item.height * c : item.width * c,
-                height: item.rotate ? item.width * c : item.height * c,
-                left: item.x * c,
-                top: item.y * c,
+                width: item.rotate
+                  ? item.height * fontSize
+                  : item.width * fontSize,
+                height: item.rotate
+                  ? item.width * fontSize
+                  : item.height * fontSize,
+                left: item.x * fontSize,
+                top: item.y * fontSize,
               }}
             >
               <span
                 className={`rotate-180 text-center flex items-center ${
                   item.rotate ? "flex-row-reverse" : "flex-col"
-                } text-[12px]`}
+                } text-${fontSize}px`}
               >
                 <p className={item.rotate ? "rotate-90" : ""}>
                   {item.width} x {item.height}

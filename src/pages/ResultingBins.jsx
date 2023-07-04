@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlineReload } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
-import RenderSingleBinPacking from "./RenderSingleBinPacking";
+import RenderSingleBinPacking from "../components/RenderSingleBinPacking";
 
 export default function ResultingBins() {
   const location = useLocation();
