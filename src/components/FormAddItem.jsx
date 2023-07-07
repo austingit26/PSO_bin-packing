@@ -38,7 +38,7 @@ export default function FormAddItem({ addItem, binWidth, binHeight }) {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "all",
+    mode: "onTouched",
     resolver: yupResolver(schema),
   });
 

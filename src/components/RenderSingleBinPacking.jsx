@@ -65,12 +65,8 @@ export default function RenderSingleBinPacking({ bin }) {
               className={`flex bg-violet-900 justify-center items-center border-y-2 border-x rounded-sm border-neutral-900 absolute`}
               key={index}
               style={{
-                width: item.rotate
-                  ? item.height * fontSize
-                  : item.width * fontSize,
-                height: item.rotate
-                  ? item.width * fontSize
-                  : item.height * fontSize,
+                width: item.width * fontSize,
+                height: item.height * fontSize,
                 left: item.x * fontSize,
                 top: item.y * fontSize,
               }}

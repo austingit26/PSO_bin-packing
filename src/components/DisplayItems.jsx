@@ -20,6 +20,7 @@ export default function DisplayItems({ listItems, removeItem }) {
     dispatch(setIsLoading(true));
     setTimeout(() => {
       const arrangedItems = solveBinPacking(binSize, listItems);
+      console.log(arrangedItems);
       dispatch(setIsLoading(false));
       navigate("/resulting-bins", { state: arrangedItems });
     }, 500);

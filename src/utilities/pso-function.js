@@ -82,19 +82,13 @@ export function solveBinPacking(binSize, items) {
         };
 
         particle.velocity[i] = newVelocity;
-
-        // Update best position
-        if (particle.fitness > particle.bestFitness) {
-          particle.bestPosition = particle.position.map((pos) => ({ ...pos }));
-          particle.bestFitness = particle.fitness;
-        }
       }
 
       // Evaluate fitness of the current position
       particle.fitness = evaluateFitness(particle.position);
 
       //heuristic function generating new improved solutions
-      const newPosition = generateNewPosition(particle.position);
+      const newPosition = updateParticlePosition(particle.position);
 
       // Evaluate fitness of the new position
       const newFitness = evaluateFitness(newPosition);
@@ -124,11 +118,12 @@ export function solveBinPacking(binSize, items) {
     w -= 0.7 / maxIterations;
   }
 
+
   return globalBestPosition;
 }
 
 /*======================= HELPER FUNCTIONS =======================*/
-function generateNewPosition(solution) {
+function updateParticlePosition(solution) {
   const bins = solution.map((bin) => ({ ...bin }));
   let arrangedBins = rearrangeItems(bins);
 
@@ -142,17 +137,17 @@ function rearrangeItems(bins) {
   bins.forEach((bin) => {
     bin.items.forEach((item) => {
       let placed = false;
+      let rotate = item.rotate;
 
       while (!placed) {
         let canPlace = false;
-        let rotate = item.rotate;
 
         for (let y = 0; y < currentBin.binHeight; y++) {
           for (let x = 0; x < currentBin.binWidth; x++) {
             canPlace = tryPlacingItem(item, currentBin.matrix, x, y, rotate);
 
             if (canPlace) {
-              updateBin(currentBin, item, x, y);
+              updateBin(currentBin, item, x, y, rotate);
               placed = true;
               break;
             }
@@ -164,11 +159,16 @@ function rearrangeItems(bins) {
         }
 
         if (!placed) {
-          const binDensity = calculateBinDensity(currentBin);
-          currentBin.binDensity = binDensity;
-          arrangedBins.push(currentBin);
-
-          currentBin = { ...bin, items: [], matrix: createMatrix(bin) };
+          // Try placing the item with rotation if it cannot fit on its original orientation
+          if (!rotate) {
+            rotate = true;
+          } else {
+            const binDensity = calculateBinDensity(currentBin);
+            currentBin.binDensity = binDensity;
+            arrangedBins.push(currentBin);
+            currentBin = { ...bin, items: [], matrix: createMatrix(bin) };
+            rotate = item.rotate; // Reset rotation state
+          }
         }
       }
     });
@@ -183,9 +183,11 @@ function rearrangeItems(bins) {
   return arrangedBins;
 }
 
-function updateBin(bin, item, x, y) {
-  const { width, height } = item;
-  const newItem = { ...item, x, y, width, height };
+function updateBin(bin, item, x, y, rotate) {
+  const { width, height } = rotate
+    ? { width: item.height, height: item.width }
+    : item;
+  const newItem = { ...item, x, y, width, height, rotate };
   bin.items.push(newItem);
 
   for (let i = y; i < y + height; i++) {
@@ -214,8 +216,10 @@ function calculateBinDensity(bin) {
   return binDensity;
 }
 
-function tryPlacingItem(item, matrix, x, y) {
-  const { width, height } = item;
+function tryPlacingItem(item, matrix, x, y, rotate) {
+  const { width, height } = rotate
+    ? { width: item.height, height: item.width }
+    : item;
   const binHeight = matrix.length;
   const binWidth = matrix[0].length;
 
@@ -255,11 +259,6 @@ function evaluateFitness(solution) {
   const fitness = densityWeight / solution.length;
   return fitness;
 }
-
-
-
-
-
 
 function can_place_item(bin, item) {
   if (item.x + item.width > bin.width || item.y + item.height > bin.height) {
